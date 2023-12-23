@@ -2,16 +2,15 @@ const path = require('path');
 const cors = require('cors');
 const cookieParser = require("cookie-parser")
 require('dotenv').config();
-const authRouter = require('./routes/authRouter');
-const router = require('./routes/routes');
 const AppError = require('./utils/appError');
-const errorController = require('./controllers/errorController');
 const express = require('express');
 const http = require('http');
 const bodyParser = require('body-parser');
 const connectDB = require('./db');
 const app = express();
 const server = http.createServer(app);
+const validateToken = require('./utils/validateToken');
+const userRoutes = require('./server/routes/UserRoutes')
 
 const corsOptions = {
   origin: '*',
@@ -38,26 +37,14 @@ app.use((req, res, next) => {
 app.use(express.json({ limit: '100mb' })); // <- Parses Json data
 app.use(express.urlencoded({ extended: true, limit: '100mb' })); // <- Parses URLencoded data
 
-
-
-
-  app.use(bodyParser.json());
-  app.use(cookieParser());
-  app.use('/client/public/upload', express.static('/client/public/upload'));
+app.use(bodyParser.json());
+app.use(cookieParser());
+app.use('/client/public/upload', express.static('/client/public/upload'));
   
-  
-  // Connect to MongoDB
-  connectDB();
-  
-  app.use(validateToken)
-  app.use('/api/users', userRoutes);
-  // API Routes
+connectDB();
 
-  app.use('/api/v1/auth/', authRouter); 
-  console.log("App Started")
-  app.use('/api/v1/', router); // <- Calling the router
-
-
-app.use(errorController); // <- Error Handling Middleware
+app.use(validateToken)
+app.use('/api/users', userRoutes);
+console.log("App Started")
 
 module.exports = app;
