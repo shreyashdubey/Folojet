@@ -43,7 +43,7 @@ app.use('/client/public/upload', express.static('/client/public/upload'));
   
 connectDB();
 
-app.use(validateToken)
+//app.use(validateToken)
 app.use('/api/users', userRoutes);
 console.log("App Started")
 
