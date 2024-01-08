@@ -11,16 +11,9 @@ const app = express();
 const server = http.createServer(app);
 const validateToken = require('./utils/validateToken');
 const userRoutes = require('./server/routes/UserRoutes')
-
-// const corsOptions = {
-//   origin: '*',
-//   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-//   credentials: true,
-//   optionsSuccessStatus: 204,
-// };
+const fedxRoutes = require('./server/routes/FedxRoutes')
 
 app.use(cors());
-//app.options('*', cors(corsOptions));
 
 app.use((req, res, next) => {	// <- Serves req time and cookies
 	
@@ -45,6 +38,7 @@ connectDB();
 
 //app.use(validateToken)
 app.use('/api/users', userRoutes);
+app.use('/api/fedx', fedxRoutes);
 console.log("App Started")
 
 module.exports = app;
