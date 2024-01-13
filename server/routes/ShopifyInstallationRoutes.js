@@ -7,6 +7,10 @@ const REDIRECT_URI = `https://donq.onrender.com/auth/callback`;
 router.get("/", (req, res) => {
     console.log(req.url);
     const { shop } = req.query;
+    if(!shop){
+        res.redirect(`https://${shop}/admin/apps`);
+        return;
+    }
     const authUrl = `https://${shop}/admin/oauth/authorize?client_id=${SHOPIFY_API_KEY}&scope=read_products&redirect_uri=${REDIRECT_URI}`;
     console.log('authUrl ',authUrl)
     res.redirect(authUrl);
@@ -44,9 +48,9 @@ router.get("/auth/callback", async (req, res) => {
             } 
         })
 
-        console.log(accessToken)
-       console.log(storeFrontResponse)
-        console.log(shopInfoResponse)
+        console.log("accessToken======= ",accessToken)
+        console.log("storeFrontResponse=========== ",storeFrontResponse)
+        console.log("shopInfoResponse============= ",shopInfoResponse)
         res.redirect(`https://${shop}/admin/apps`);
 
     } catch (error) {
