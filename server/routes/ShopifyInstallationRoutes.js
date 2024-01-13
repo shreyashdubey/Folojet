@@ -12,7 +12,7 @@ router.get("/", (req, res) => {
         res.redirect(`https://shopify.dev/apps/default-app-home`);
         return;
     }
-    const authUrl = `https://${shop}/admin/oauth/authorize?client_id=${SHOPIFY_API_KEY}&scope=read_products&redirect_uri=${REDIRECT_URI}`;
+    const authUrl = `https://${shop}/admin/oauth/authorize?client_id=${SHOPIFY_API_KEY}&scope=unauthenticated_read_product_listings,unauthenticated_read_product_tags,read_gift_cards,read_products,read_product_listings,read_shipping,write_themes&redirect_uri=${REDIRECT_URI}`;
     console.log('authUrl ',authUrl)
     res.redirect(authUrl);
 });
@@ -30,8 +30,8 @@ router.get("/auth/callback", async (req, res) => {
                 code,
             }
         );
-        console.log('accR ',accessTokenResponse)
         const accessToken = accessTokenResponse.data.access_token;
+        console.log('accR ',accessToken)
 
         // Step 3: Use the access token to make authenticated requests to the Shopify API
         const shopInfoResponse = await axios.get(
@@ -64,6 +64,7 @@ router.get("/auth/callback", async (req, res) => {
         //     "Error during OAuth callback:",
         //     error.response ? error.response.data : error.message
         // );
+        // console.log(error);
         res.status(500).send("Internal Server Error");
     }
 });
