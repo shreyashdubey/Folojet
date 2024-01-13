@@ -24,7 +24,6 @@ app.use((req, res, next) => {	// <- Serves req time and cookies
 
 app.use((req, res, next) => {
 	res.setHeader('Content-Type', 'application/json');
-	console.log(req.url)
 	next();
 });
 

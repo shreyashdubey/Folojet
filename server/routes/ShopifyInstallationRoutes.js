@@ -8,7 +8,7 @@ router.get("/", (req, res) => {
     console.log(req.url);
     const { shop } = req.query;
     if(!shop){
-        res.redirect(`https://${shop}/admin/apps`);
+        res.redirect(`https://shopify.dev/apps/default-app-home`);
         return;
     }
     const authUrl = `https://${shop}/admin/oauth/authorize?client_id=${SHOPIFY_API_KEY}&scope=read_products&redirect_uri=${REDIRECT_URI}`;
