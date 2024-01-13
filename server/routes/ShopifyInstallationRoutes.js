@@ -5,6 +5,7 @@ const SHOPIFY_API_KEY = "7f2f7fb0ffd9670eb8e100c22cd8c307";
 const SHOPIFY_API_SECRET = "184083bfaee2172141f8ea289cc37967";
 const REDIRECT_URI = `https://donq.onrender.com/auth/callback`;
 router.get("/", (req, res) => {
+    console.log(req.url);
     const { shop } = req.query;
     const authUrl = `https://${shop}/admin/oauth/authorize?client_id=${SHOPIFY_API_KEY}&scope=read_products&redirect_uri=${REDIRECT_URI}`;
     console.log('authUrl ',authUrl)
