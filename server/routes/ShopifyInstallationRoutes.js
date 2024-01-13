@@ -13,7 +13,7 @@ router.get("/", (req, res) => {
         res.redirect(`https://shopify.dev/apps/default-app-home`);
         return;
     }
-    const authUrl = `https://${shop}/admin/oauth/authorize?client_id=${SHOPIFY_API_KEY}&scope=unauthenticated_read_product_listings,unauthenticated_read_product_tags,read_gift_cards,read_products,read_product_listings,read_shipping,write_themes&redirect_uri,unauthenticated_read_product_inventory=${REDIRECT_URI}`;
+    const authUrl = `https://${shop}/admin/oauth/authorize?client_id=${SHOPIFY_API_KEY}&scope=unauthenticated_read_product_listings,unauthenticated_read_product_tags,read_gift_cards,read_products,read_product_listings,read_shipping,write_themes,unauthenticated_read_product_inventory&redirect_uri=${REDIRECT_URI}`;
     console.log('authUrl ', authUrl)
     res.redirect(authUrl);
 });
