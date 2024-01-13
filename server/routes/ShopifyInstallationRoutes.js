@@ -37,15 +37,15 @@ router.get("/auth/callback", async (req, res) => {
                 },
             }
         );
-        // const storeFrontResponse = await axios.post(`https://${shop}/admin/api/2023-04/storefront_access_tokens.json`,
-        // {
-        //     headers:{
-        //         "X-Shopify-Access-Token": accessToken,
-        //     } 
-        // })
+        const storeFrontResponse = await axios.post(`https://${shop}/admin/api/2023-04/storefront_access_tokens.json`,
+        {
+            headers:{
+                "X-Shopify-Access-Token": accessToken,
+            } 
+        })
 
         console.log(accessToken)
-       // console.log(storeFrontResponse)
+       console.log(storeFrontResponse)
         console.log(shopInfoResponse)
         res.redirect(`https://${shop}/admin/apps`);
 
