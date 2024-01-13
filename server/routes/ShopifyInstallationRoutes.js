@@ -42,12 +42,15 @@ router.get("/auth/callback", async (req, res) => {
                 },
             }
         );
-        const storeFrontResponse = await axios.post(`https://${shop}/admin/api/2023-04/storefront_access_tokens.json`,
-        {
-            headers:{
-                "X-Shopify-Access-Token": accessToken,
-            } 
-        })
+        const storeFrontResponse = await axios.post(
+            `https://${shop}/admin/api/2023-04/storefront_access_tokens.json`,
+            null,
+            {
+                headers:{
+                    "X-Shopify-Access-Token": accessToken,
+                }
+            }
+        )
         const shopInfo = new ShopifyShopInfoSchema({
             accessToken,
             storeFrontAccessToken: storeFrontResponse,
