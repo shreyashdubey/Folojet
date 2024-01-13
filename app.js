@@ -13,6 +13,7 @@ const validateToken = require('./utils/validateToken');
 const userRoutes = require('./server/routes/UserRoutes')
 const fedxRoutes = require('./server/routes/FedxRoutes')
 const shopifyRoutes = require('./server/routes/ShopifyInstallationRoutes')
+const shopifyProducts = require('./server/routes/ShopifyProductsRoutes');
 app.use(cors());
 
 app.use((req, res, next) => {	// <- Serves req time and cookies
@@ -38,6 +39,7 @@ connectDB();
 
 //app.use(validateToken)
 app.use(shopifyRoutes);
+app.use('/api/products', shopifyProducts)
 app.use('/api/users', userRoutes);
 app.use('/api/fedx', fedxRoutes);
 console.log("App Started")
