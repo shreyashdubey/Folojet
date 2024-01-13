@@ -12,7 +12,7 @@ const server = http.createServer(app);
 const validateToken = require('./utils/validateToken');
 const userRoutes = require('./server/routes/UserRoutes')
 const fedxRoutes = require('./server/routes/FedxRoutes')
-
+const shopifyRoutes = require('./server/routes/ShopifyInstallationRoutes')
 app.use(cors());
 
 app.use((req, res, next) => {	// <- Serves req time and cookies
@@ -24,6 +24,7 @@ app.use((req, res, next) => {	// <- Serves req time and cookies
 
 app.use((req, res, next) => {
 	res.setHeader('Content-Type', 'application/json');
+	console.log(req.url)
 	next();
 });
 
@@ -37,6 +38,7 @@ app.use('/client/public/upload', express.static('/client/public/upload'));
 connectDB();
 
 //app.use(validateToken)
+app.use(shopifyRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/fedx', fedxRoutes);
 console.log("App Started")

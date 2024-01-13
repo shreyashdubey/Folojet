@@ -1,8 +1,8 @@
 const express = require('express');
+const axios = require('axios');
 const router = express.Router();
 const User = require('../models/UserSchema'); 
 const  { getAccessToken } = require('../services/fedxService')
-const axios = require('axios');
 router.get('/get-access-token', async (req, res) => {
   try {
         const accessToken = await getAccessToken();
