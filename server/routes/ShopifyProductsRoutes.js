@@ -22,10 +22,11 @@ router.get('/fetchAllProducts', async(req, res, next) => {
                 productType
                 totalInventory
                 vendor
+                
               }
             }
-          }
-        }`
+          }}
+        `
       }
         const allProducts = await axios.post(
             `https://${targetShopDomain}/api/2024-01/graphql.json`,
