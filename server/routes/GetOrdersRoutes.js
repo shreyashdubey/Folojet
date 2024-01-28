@@ -3,7 +3,7 @@ const axios = require("axios");
 const router = express.Router();
 const ShopifyShopInfoSchema = require("../models/ShopifyShopInfoSchema");
 const PriceRulesSchema = require("../models/PriceRulesSchema");
-
+const { trackShipment } = require("../services/fedxService");
 router.post("/getOrders", async (req, res) => {
   try {
     const { myshopify_domain, customerId } = req.body;
@@ -25,37 +25,33 @@ router.post("/getOrders", async (req, res) => {
       },
     });
 
-    // Extract desired data format
-    const extractedData = response.data.orders.map((order) => {
-      const { id, fulfillments } = order;
+    const orders = response.data.orders;
 
-      if (fulfillments && fulfillments.length > 0) {
-        // Extract tracking numbers and line items from fulfillments
-        const tracking_numbers = fulfillments.reduce((acc, fulfillment) => {
-          if (
-            fulfillment.tracking_numbers &&
-            fulfillment.tracking_numbers.length > 0
-          ) {
-            acc.push(...fulfillment.tracking_numbers);
-          }
-          return acc;
-        }, []);
+    const ordersWithTracking = [];
+    for (const order of orders) {
+      const hasFulfillments =
+        Array.isArray(order.fulfillments) && order.fulfillments.length > 0;
+      const hasTrackingNumbers =
+        hasFulfillments &&
+        Array.isArray(order.fulfillments[0].tracking_numbers) &&
+        order.fulfillments[0].tracking_numbers.length > 0;
+      const orderId = order.id;
+      const trackingNumbers = hasTrackingNumbers
+        ? order.fulfillments[0].tracking_numbers
+        : [];
+      const lineItems = order.line_items || [];
+      const fedexResponse = hasTrackingNumbers
+        ? await trackShipment(trackingNumbers)
+        : "";
+      ordersWithTracking.push({
+        orderId,
+        trackingNumbers,
+        lineItems,
+        fedexResponse,
+      });
+    }
 
-        const line_items = fulfillments.reduce((acc, fulfillment) => {
-          if (fulfillment.line_items && fulfillment.line_items.length > 0) {
-            acc.push(...fulfillment.line_items);
-          }
-          return acc;
-        }, []);
-
-        return { id, tracking_numbers, line_items };
-      } else {
-        // If no fulfillments, return empty arrays
-        return { id, tracking_numbers: [], line_items: [] };
-      }
-    });
-    res.json(extractedData);
-    //res.json(response.data);
+    res.json(ordersWithTracking);
   } catch (error) {
     console.error("Error in getOrders route:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
