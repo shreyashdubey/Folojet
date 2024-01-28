@@ -18,7 +18,7 @@ router.get("/", (req, res) => {
   res.redirect(authUrl);
 });
 
-router.get("/auth/callback", async (req, res) => {
+router.get("/callback", async (req, res) => {
   const { code, shop } = req.query;
   console.log(code, shop);
 
