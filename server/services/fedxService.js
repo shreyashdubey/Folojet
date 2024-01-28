@@ -52,6 +52,22 @@ async function trackShipment(trackingNumbers) {
   }
 }
 
+async function getProductImages(myShopifyDomain, productId, accessToken) {
+  const apiUrl = `https://${myShopifyDomain}/admin/api/2024-01/products/${productId}/images.json`;
+
+  try {
+    const response = await axios.get(apiUrl, {
+      headers: {
+        "X-Shopify-Access-Token": accessToken,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error while calling Shopify API:", error.message);
+    throw new Error("Failed to get product images");
+  }
+}
+
 async function getAccessToken() {
   try {
     const existingToken = await FedxAccessTokenSchema.findOne();
@@ -107,4 +123,4 @@ function isTokenValid(token) {
   return /* Your validation logic */;
 }
 
-module.exports = { getAccessToken, trackShipment };
+module.exports = { getAccessToken, trackShipment, getProductImages };

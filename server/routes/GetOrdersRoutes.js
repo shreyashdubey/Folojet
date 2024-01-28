@@ -3,7 +3,7 @@ const axios = require("axios");
 const router = express.Router();
 const ShopifyShopInfoSchema = require("../models/ShopifyShopInfoSchema");
 const PriceRulesSchema = require("../models/PriceRulesSchema");
-const { trackShipment } = require("../services/fedxService");
+const { trackShipment, getProductImages } = require("../services/fedxService");
 router.post("/getOrders", async (req, res) => {
   try {
     const { myshopify_domain, customerId } = req.body;
@@ -39,16 +39,36 @@ router.post("/getOrders", async (req, res) => {
       const trackingNumbers = hasTrackingNumbers
         ? order.fulfillments[0].tracking_numbers
         : [];
-      const lineItems = order.line_items || [];
-      const fedexResponse = hasTrackingNumbers
-        ? await trackShipment(trackingNumbers)
-        : "";
-      ordersWithTracking.push({
-        orderId,
-        trackingNumbers,
-        lineItems,
-        fedexResponse,
-      });
+      if (hasTrackingNumbers) {
+        const lineItems = order.line_items || [];
+        const productIds = lineItems.map((item) => item.product_id);
+        const productImagesArray = [];
+        for (const productId of productIds) {
+          try {
+            const productImagesResponse = await getProductImages(
+              myshopify_domain,
+              productId,
+              accessToken
+            );
+            productImagesArray.push({ [productId]: productImagesResponse });
+          } catch (error) {
+            console.error(
+              `Error while getting product images for product_id ${productId}:`,
+              error.message
+            );
+          }
+        }
+        const fedexResponse = hasTrackingNumbers
+          ? await trackShipment(trackingNumbers)
+          : "";
+        ordersWithTracking.push({
+          orderId,
+          trackingNumbers,
+          lineItems,
+          fedexResponse,
+          productImages: productImagesArray,
+        });
+      }
     }
 
     res.json(ordersWithTracking);
