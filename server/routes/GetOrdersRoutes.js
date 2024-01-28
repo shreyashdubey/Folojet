@@ -41,22 +41,16 @@ router.post("/getOrders", async (req, res) => {
         : [];
       if (hasTrackingNumbers) {
         const lineItems = order.line_items || [];
-        const productIds = lineItems.map((item) => item.product_id);
-        const productImagesArray = [];
-        for (const productId of productIds) {
-          try {
-            const productImagesResponse = await getProductImages(
-              myshopify_domain,
-              productId,
-              accessToken
-            );
-            productImagesArray.push({ [productId]: productImagesResponse });
-          } catch (error) {
-            console.error(
-              `Error while getting product images for product_id ${productId}:`,
-              error.message
-            );
-          }
+        const lineItemsWithProductDetails = [];
+        for (const lineItem of lineItems) {
+          const productId = lineItem.product_id;
+          const productDetails = await getProductImages(
+            myshopify_domain,
+            productId,
+            accessToken
+          );
+          lineItem.product_id_details = productDetails;
+          lineItemsWithProductDetails.push(lineItem);
         }
         const fedexResponse = hasTrackingNumbers
           ? await trackShipment(trackingNumbers)
@@ -64,9 +58,8 @@ router.post("/getOrders", async (req, res) => {
         ordersWithTracking.push({
           orderId,
           trackingNumbers,
-          lineItems,
+          lineItems: lineItemsWithProductDetails, // Updated line_items
           fedexResponse,
-          productImages: productImagesArray,
         });
       }
     }
