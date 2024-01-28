@@ -14,6 +14,7 @@ const userRoutes = require("./server/routes/UserRoutes");
 const fedxRoutes = require("./server/routes/FedxRoutes");
 const shopifyRoutes = require("./server/routes/ShopifyInstallationRoutes");
 const shopifyProducts = require("./server/routes/ShopifyProductsRoutes");
+const priceRulesRoutes = require("./server/routes/PriceRulesRoutes");
 app.use(cors());
 
 app.use((req, res, next) => {
@@ -43,6 +44,7 @@ app.use("/api/auth", shopifyRoutes);
 app.use("/api/products", shopifyProducts);
 app.use("/api/users", userRoutes);
 app.use("/api/fedx", fedxRoutes);
+app.use("/api/priceRules", priceRulesRoutes);
 console.log("App Started");
 
 module.exports = app;
