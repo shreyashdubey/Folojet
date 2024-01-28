@@ -66,9 +66,10 @@ function transformPriceRules(jsonResponse) {
         title: priceRule.title,
         subtitle,
         status,
+        endDate: priceRule.ends_at || null,
       };
     })
-    .filter((rule) => rule.status !== "Expired");
+    .filter((rule) => rule.status !== "Scheduled" && rule.status !== "Expired");
 }
 router.post("/getPriceRules", async (req, res) => {
   try {
