@@ -77,8 +77,15 @@ router.get("/callback", async (req, res) => {
     );
 
     console.log("Upsert result: ", result);
-
-    res.redirect(`https://${shop}/admin/apps`);
+    const { myshopify_domain } = req.body;
+    const shopInfo = await ShopifyShopInfoSchema.findOne({ myshopify_domain });
+    if (!shopInfo) {
+      return res.status(404).json({ error: "Shop not found" });
+    }
+    const shopName = shopInfo.shopData.shop.name;
+    res.redirect(
+      `https://admin.shopify.com/store/${shopName}/settings/apps?tab=installed`
+    );
   } catch (error) {
     console.error(
       "Error during OAuth callback:",
