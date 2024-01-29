@@ -85,6 +85,9 @@ router.get("/callback", async (req, res) => {
     }
     const shopName = shopInfo.shopData.shop.name;
     console.log("--------------shopName", shopName);
+    console.log(
+      `https://admin.shopify.com/store/${shopName}/settings/apps?tab=installed`
+    );
     res.redirect(
       `https://admin.shopify.com/store/${shopName}/settings/apps?tab=installed`
     );
