@@ -91,8 +91,10 @@ router.get("/callback", async (req, res) => {
     #
     #
 `;
-    console.log("--------------shopName", shopName);
-    return res.status(404).json({ f });
+
+    const formattedF = `<pre>${f}</pre>`;
+
+    return res.status(404).send(formattedF);
     console.log(
       `https://admin.shopify.com/store/${shopName}/settings/apps?tab=installed`
     );
