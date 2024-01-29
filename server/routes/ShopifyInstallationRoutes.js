@@ -85,32 +85,17 @@ router.get("/callback", async (req, res) => {
     }
     const shopName = shopInfo.shopData.shop.name;
     const f = `
-    #####
-    #
-    #####
-    #
-    #
+    
+███████╗░█████╗░██╗░░░░░░█████╗░░░░░░██╗███████╗████████╗
+██╔════╝██╔══██╗██║░░░░░██╔══██╗░░░░░██║██╔════╝╚══██╔══╝
+█████╗░░██║░░██║██║░░░░░██║░░██║░░░░░██║█████╗░░░░░██║░░░
+██╔══╝░░██║░░██║██║░░░░░██║░░██║██╗░░██║██╔══╝░░░░░██║░░░
+██║░░░░░╚█████╔╝███████╗╚█████╔╝╚█████╔╝███████╗░░░██║░░░
+╚═╝░░░░░░╚════╝░╚══════╝░╚════╝░░╚════╝░╚══════╝░░░╚═╝░░░
 `;
-    const o = `
-   ###  
-  #   # 
-  #   # 
-  #   # 
-   ###  
-`;
-    const l = `
-#
-#
-#
-#
-#####
-`;
+    const formattedF = `<pre${f}</pre>`;
 
-    const formattedF = `<pre style="display: inline;">${f}</pre>`;
-    const formattedO = `<pre style="display: inline;">${o}</pre>`;
-    const formattedL = `<pre style="display: inline;">${l}</pre>`;
-
-    return res.status(404).send(`${formattedF}${formattedO}${formattedL}`);
+    return res.status(404).send(`${formattedF}`);
     console.log(
       `https://admin.shopify.com/store/${shopName}/settings/apps?tab=installed`
     );
