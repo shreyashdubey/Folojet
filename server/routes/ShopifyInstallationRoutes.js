@@ -80,7 +80,9 @@ router.get("/callback", async (req, res) => {
     const { myshopify_domain } = req.body;
     const shopInfo = await ShopifyShopInfoSchema.findOne({ myshopify_domain });
     if (!shopInfo) {
-      return res.status(404).json({ error: "Shop not found" });
+      return res
+        .status(404)
+        .json({ shop, myshopify_domain, error: "Shop not found" });
     }
     const shopName = shopInfo.shopData.shop.name;
     res.redirect(
