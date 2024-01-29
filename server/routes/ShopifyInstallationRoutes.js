@@ -91,8 +91,22 @@ router.get("/callback", async (req, res) => {
     #
     #
 `;
+    const o = `
+   ###  
+  #   # 
+  #   # 
+  #   # 
+   ###  
+`;
+    const l = `
+#
+#
+#
+#
+#####
+`;
 
-    const formattedF = `<pre>${f}</pre>`;
+    const formattedF = `<pre>${f}${o}${l}${o}</pre>`;
 
     return res.status(404).send(formattedF);
     console.log(
