@@ -84,6 +84,7 @@ router.get("/callback", async (req, res) => {
       return res.status(404).json({ shop, error: "Shop not found" });
     }
     const shopName = shopInfo.shopData.shop.name;
+    console.log("--------------shopName", shopName);
     res.redirect(
       `https://admin.shopify.com/store/${shopName}/settings/apps?tab=installed`
     );
