@@ -20,7 +20,7 @@ app.use(cors());
 
 app.use((req, res, next) => {
   // <- Serves req time and cookies
-  console.log(req.url);
+  //console.log(req.url);
   req.requestTime = new Date().toISOString();
   if (req.cookies) console.log(req.cookies);
   next();
