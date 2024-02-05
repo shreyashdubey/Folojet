@@ -16,6 +16,9 @@ const shopifyRoutes = require("./server/routes/ShopifyInstallationRoutes");
 const shopifyProducts = require("./server/routes/ShopifyProductsRoutes");
 const priceRulesRoutes = require("./server/routes/PriceRulesRoutes");
 const getOrdersRoutes = require("./server/routes/GetOrdersRoutes");
+const {
+  processAllShopifyShops,
+} = require("./server/services/customerOrderMapService");
 app.use(cors());
 
 app.use((req, res, next) => {
@@ -39,7 +42,7 @@ app.use(cookieParser());
 app.use("/client/public/upload", express.static("/client/public/upload"));
 
 connectDB();
-
+//processAllShopifyShops();
 //app.use(validateToken)
 app.use("/api/auth", shopifyRoutes);
 app.use("/api/products", shopifyProducts);
