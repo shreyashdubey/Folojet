@@ -42,7 +42,7 @@ app.use(cookieParser());
 app.use("/client/public/upload", express.static("/client/public/upload"));
 
 connectDB();
-//processAllShopifyShops();
+processAllShopifyShops();
 //app.use(validateToken)
 app.use("/api/auth", shopifyRoutes);
 app.use("/api/products", shopifyProducts);

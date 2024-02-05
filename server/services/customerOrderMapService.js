@@ -2,6 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 const ShopifyShopInfoSchema = require("../models/ShopifyShopInfoSchema");
+const CustomerSchema = require("../models/CustomerSchema");
 const PriceRulesSchema = require("../models/PriceRulesSchema");
 const { trackShipment, getProductImages } = require("./fedxService");
 async function processAllShopifyShops() {
@@ -36,8 +37,21 @@ async function fetchOrders(shopInfo) {
   }
 }
 
-function handleOrdersResponse(orders) {
-  //console.log("Received orders:", orders);
+function handleOrdersResponse(response) {
+  const { orders } = response;
+  for (const order of orders) {
+    const { customer } = order;
+    const customerInstance = new CustomerSchema(customer);
+    console.log(customer.id);
+    customerInstance
+      .save()
+      .then((savedCustomer) => {
+        //console.log("Customer saved successfully:", savedCustomer);
+      })
+      .catch((error) => {
+        //console.error("Error saving customer:", error);
+      });
+  }
 }
 
 module.exports = { processAllShopifyShops };
