@@ -3,11 +3,8 @@ const Schema = mongoose.Schema;
 
 const customerSchema = new Schema(
   {
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
+    myshopify_domain: { type: String, required: true },
+    id: { type: Number, required: true, unique: true },
     created_at: Date,
     updated_at: Date,
     state: String,
@@ -33,8 +30,6 @@ const customerSchema = new Schema(
     marketing_opt_in_level: String,
     tax_exemptions: [String],
     admin_graphql_api_id: String,
-
-    // Nested schema for the default address
     default_address: {
       type: new Schema(
         {
