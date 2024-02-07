@@ -6,7 +6,7 @@ const CustomerSchema = require("../models/CustomerSchema");
 const PriceRulesSchema = require("../models/PriceRulesSchema");
 const Fulfillment = require("../models/FulfillmentSchema");
 const LineItem = require("../models/LineItemSchema");
-const OrderSchema = require("../models/OrderSchema");
+const Order = require("../models/OrderSchema");
 const { trackShipment, getProductImages } = require("./fedxService");
 async function processAllShopifyShops() {
   try {
@@ -33,56 +33,77 @@ async function fetchOrders(shopInfo) {
     });
 
     // Handle the response here, you can pass it to another function or process it directly
-    handleOrdersResponse(response.data, myshopify_domain);
+    await handleOrdersResponse(response.data, myshopify_domain);
   } catch (error) {
     console.error("Error fetching orders:", error.message);
   }
 }
 
-function handleOrdersResponse(response, myshopify_domain) {
+async function handleOrdersResponse(response, myshopify_domain) {
   const { orders } = response;
   for (const order of orders) {
-    const { fulfillments, line_items, customer, id, admin_graphql_api_id } =
-      order;
-    const fulfillment = new Fulfillment(fulfillments);
-    const lineItem = new LineItem(line_items);
-    console.log("fulfillment ", fulfillments);
-    console.log("line_items ", line_items);
-    console.log("--------------------------------------------------");
-    // fulfillment
-    //   .save()
-    //   .then((savedFulfillment) => {
-    //     console.log(`Fulfillment saved with ID: ${savedFulfillment._id}`);
-    //     orderData.fulfillments.push(savedFulfillment._id);
+    try {
+      const { fulfillments, line_items, customer, id, admin_graphql_api_id } =
+        order;
 
-    //     return lineItem.save();
-    //   })
-    //   .then((savedLineItem) => {
-    //     console.log(`Line Item saved with ID: ${savedLineItem._id}`);
-    //     orderData.line_items.push(savedLineItem._id);
+      // Save fulfillments if they exist
+      let fulfillmentIdArray = [];
+      if (fulfillments && fulfillments.length > 0) {
+        const fulfillmentObjects = [];
+        for (const fulfillmentData of fulfillments) {
+          const lineItemsData = fulfillmentData.line_items || [];
+          delete fulfillmentData.line_items;
+          const lineItemsIds = await LineItem.insertMany(lineItemsData);
+          const lineItemsObjectIdArray = lineItemsIds.map((item) => item._id);
 
-    //     // Save the order with references to fulfillments and line items
-    //     const order = new OrderSchema(orderData);
-    //     return order.save();
-    //   })
-    //   .then((savedOrder) => {
-    //     console.log(`Order saved with ID: ${savedOrder._id}`);
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error saving data to MongoDB:", error);
-    //     return;
-    //   });
+          const fulfillment = await Fulfillment.create({
+            ...fulfillmentData,
+            line_items: lineItemsObjectIdArray,
+          });
+          fulfillment.save();
+          fulfillmentObjects.push(fulfillment);
+        }
+        fulfillmentIdArray = fulfillmentObjects.map((item) => item._id);
+      }
 
-    const customerData = { ...customer, myshopify_domain };
-    const customerInstance = new CustomerSchema(customerData);
-    customerInstance
-      .save()
-      .then((savedCustomer) => {
-        //console.log("Customer saved successfully:", savedCustomer);
+      // Save standalone line_items if they exist
+      let standaloneLineItemsObjectIdArray = [];
+      if (line_items && line_items.length > 0) {
+        const standaloneLineItemsData = line_items.map((item) => item);
+        const standaloneLineItemsIds = await LineItem.insertMany(
+          standaloneLineItemsData
+        );
+
+        // Convert standalone line_items to array of ObjectId
+        standaloneLineItemsObjectIdArray = standaloneLineItemsIds.map(
+          (item) => item._id
+        );
+      }
+      const orderInstance = Order.create({
+        id,
+        line_items: standaloneLineItemsObjectIdArray,
+        fulfillments: fulfillmentIdArray,
+        myshopify_domain,
       })
-      .catch((error) => {
-        //console.error("Error saving customer:", error);
-      });
+        .then(() => {
+          //console.log("Order Saved successfully");
+        })
+        .catch((error) => {
+          //console.log("Some error happened saving orders");
+        });
+      const customerData = { ...customer, myshopify_domain };
+      const customerInstance = new CustomerSchema(customerData);
+      customerInstance
+        .save()
+        .then((savedCustomer) => {
+          //console.log("Customer saved successfully");
+        })
+        .catch((error) => {
+          //console.error("Error saving customer");
+        });
+    } catch (error) {
+      console.error(`Error processing order ${order.id}:`, error);
+    }
   }
 }
 
