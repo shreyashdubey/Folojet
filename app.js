@@ -3,13 +3,11 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 const express = require("express");
-const http = require("http");
 const bodyParser = require("body-parser");
 const connectDB = require("./db");
 const app = express();
-const server = http.createServer(app);
 const userRoutes = require("./server/routes/UserRoutes");
-const fedxRoutes = require("./server/routes/FedxRoutes");
+const fedExRoutes = require("./server/routes/FedExRoutes");
 const shopifyRoutes = require("./server/routes/ShopifyInstallationRoutes");
 const shopifyProducts = require("./server/routes/ShopifyProductsRoutes");
 const priceRulesRoutes = require("./server/routes/PriceRulesRoutes");
@@ -40,12 +38,11 @@ app.use(cookieParser());
 app.use("/client/public/upload", express.static("/client/public/upload"));
 
 connectDB();
-processAllShopifyShops();
-//app.use(validateToken)
+processAllShopifyShops(); // Do this in cron job
 app.use("/api/auth", shopifyRoutes);
 app.use("/api/products", shopifyProducts);
 app.use("/api/users", userRoutes);
-app.use("/api/fedx", fedxRoutes);
+app.use("/api/fedx", fedExRoutes);
 app.use("/api/priceRules", priceRulesRoutes);
 app.use("/api/shopify-orders", getOrdersRoutes);
 console.log("App Started");

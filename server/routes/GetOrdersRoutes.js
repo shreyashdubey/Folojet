@@ -3,7 +3,7 @@ const axios = require("axios");
 const router = express.Router();
 const ShopifyShopInfoSchema = require("../models/ShopifyShopInfoSchema");
 const PriceRulesSchema = require("../models/PriceRulesSchema");
-const { trackShipment, getProductImages } = require("../services/fedxService");
+const { trackShipment, getProductImages } = require("../services/fedExService");
 router.post("/getOrders", async (req, res) => {
   try {
     const { myshopify_domain, customerId } = req.body;

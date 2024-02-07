@@ -1,7 +1,7 @@
 // FedEx API setup
 const axios = require("axios");
 const qs = require("qs");
-const FedxAccessTokenSchema = require("../models/FedxAccessTokenSchema");
+const FedExAccessTokenSchema = require("../models/FedExAccessTokenSchema");
 const client_id = process.env.FEDEX_CLIENT_ID;
 const client_secret = process.env.FEDEX_CLIENT_SECRET;
 const fedexApiUrl = process.env.FEDEX_API_BASE_URL;
@@ -68,7 +68,7 @@ async function getProductImages(myShopifyDomain, productId, accessToken) {
 
 async function getAccessToken() {
   try {
-    const existingToken = await FedxAccessTokenSchema.findOne();
+    const existingToken = await FedExAccessTokenSchema.findOne();
 
     if (existingToken && isTokenValid(existingToken)) {
       return existingToken.access_token;
@@ -92,7 +92,7 @@ async function getAccessToken() {
       const { access_token, token_type, expires_in, scope } = response.data;
 
       // Save the new access token in MongoDB
-      await FedxAccessTokenSchema.findOneAndUpdate(
+      await FedExAccessTokenSchema.findOneAndUpdate(
         {},
         { access_token, token_type, expires_in, scope },
         { upsert: true }
