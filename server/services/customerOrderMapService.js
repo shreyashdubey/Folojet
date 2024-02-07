@@ -3,11 +3,9 @@ const axios = require("axios");
 const router = express.Router();
 const ShopifyShopInfoSchema = require("../models/ShopifyShopInfoSchema");
 const CustomerSchema = require("../models/CustomerSchema");
-const PriceRulesSchema = require("../models/PriceRulesSchema");
 const Fulfillment = require("../models/FulfillmentSchema");
 const LineItem = require("../models/LineItemSchema");
 const Order = require("../models/OrderSchema");
-const { trackShipment, getProductImages } = require("./fedxService");
 async function processAllShopifyShops() {
   try {
     const allShopifyShops = await ShopifyShopInfoSchema.find();
@@ -31,8 +29,6 @@ async function fetchOrders(shopInfo) {
         "X-Shopify-Access-Token": accessToken,
       },
     });
-
-    // Handle the response here, you can pass it to another function or process it directly
     await handleOrdersResponse(response.data, myshopify_domain);
   } catch (error) {
     console.error("Error fetching orders:", error.message);
@@ -46,7 +42,6 @@ async function handleOrdersResponse(response, myshopify_domain) {
       const { fulfillments, line_items, customer, id, admin_graphql_api_id } =
         order;
 
-      // Save fulfillments if they exist
       let fulfillmentIdArray = [];
       if (fulfillments && fulfillments.length > 0) {
         const fulfillmentObjects = [];
@@ -66,7 +61,6 @@ async function handleOrdersResponse(response, myshopify_domain) {
         fulfillmentIdArray = fulfillmentObjects.map((item) => item._id);
       }
 
-      // Save standalone line_items if they exist
       let standaloneLineItemsObjectIdArray = [];
       if (line_items && line_items.length > 0) {
         const standaloneLineItemsData = line_items.map((item) => item);
@@ -74,7 +68,6 @@ async function handleOrdersResponse(response, myshopify_domain) {
           standaloneLineItemsData
         );
 
-        // Convert standalone line_items to array of ObjectId
         standaloneLineItemsObjectIdArray = standaloneLineItemsIds.map(
           (item) => item._id
         );

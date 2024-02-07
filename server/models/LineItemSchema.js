@@ -1,6 +1,4 @@
-// lineItem.js
 const mongoose = require("mongoose");
-
 const lineItemSchema = new mongoose.Schema(
   {
     id: { type: Number, required: true },
