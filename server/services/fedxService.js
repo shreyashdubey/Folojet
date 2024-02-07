@@ -2,10 +2,10 @@
 const axios = require("axios");
 const qs = require("qs");
 const FedxAccessTokenSchema = require("../models/FedxAccessTokenSchema");
-const client_id = "l743140b9e91864aca805e82cab05574ba";
-const client_secret = "e2100d2cc0cc48e695e5003f0be0ebe5";
-const fedexApiUrl = "https://apis-sandbox.fedex.com/oauth/token";
-
+const client_id = process.env.FEDEX_CLIENT_ID;
+const client_secret = process.env.FEDEX_CLIENT_SECRET;
+const fedexApiUrl = process.env.FEDEX_API_BASE_URL;
+const fedexTrackingApiUrl = process.env.FEDEX_API_TRACKING_URL;
 async function trackShipment(trackingNumbers) {
   if (
     !trackingNumbers ||
@@ -38,11 +38,9 @@ async function trackShipment(trackingNumbers) {
     };
 
     // Make the API request
-    const response = await axios.post(
-      "https://apis-sandbox.fedex.com/track/v1/trackingnumbers",
-      requestBody,
-      { headers }
-    );
+    const response = await axios.post(fedexTrackingApiUrl, requestBody, {
+      headers,
+    });
 
     // Return the response from FedEx API
     return response.data;
