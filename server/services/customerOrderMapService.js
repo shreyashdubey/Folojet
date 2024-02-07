@@ -1,6 +1,5 @@
 const express = require("express");
 const axios = require("axios");
-const router = express.Router();
 const ShopifyShopInfoSchema = require("../models/ShopifyShopInfoSchema");
 const CustomerSchema = require("../models/CustomerSchema");
 const Fulfillment = require("../models/FulfillmentSchema");
