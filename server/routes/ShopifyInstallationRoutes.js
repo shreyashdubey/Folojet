@@ -1,9 +1,9 @@
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
-const SHOPIFY_API_KEY = "7f2f7fb0ffd9670eb8e100c22cd8c307";
-const SHOPIFY_API_SECRET = "184083bfaee2172141f8ea289cc37967";
-const REDIRECT_URI = `https://donq.onrender.com/api/auth/callback`;
+const SHOPIFY_API_KEY = process.env.SHOPIFY_API_KEY;
+const SHOPIFY_API_SECRET = process.env.SHOPIFY_API_SECRET;
+const REDIRECT_URI = process.env.SHOPIFY_REDIRECT_URI;
 const ShopifyShopInfoSchema = require("../models/ShopifyShopInfoSchema");
 
 router.get("/", (req, res) => {

@@ -15,13 +15,13 @@ const getOrdersRoutes = require("./server/routes/GetOrdersRoutes");
 const {
   processAllShopifyShops,
 } = require("./server/services/customerOrderMapService");
+
+connectDB();
+
 app.use(cors());
 
 app.use((req, res, next) => {
-  // <- Serves req time and cookies
-  //console.log(req.url);
   req.requestTime = new Date().toISOString();
-  if (req.cookies) console.log(req.cookies);
   next();
 });
 
@@ -30,13 +30,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json({ limit: "100mb" })); // <- Parses Json data
-app.use(express.urlencoded({ extended: true, limit: "100mb" })); // <- Parses URLencoded data
+app.use(express.json({ limit: "100mb" }));
+app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-connectDB();
 processAllShopifyShops(); // Do this in cron job
 app.use("/api/auth", shopifyRoutes);
 app.use("/api/products", shopifyProducts);
