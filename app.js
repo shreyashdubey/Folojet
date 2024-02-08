@@ -35,7 +35,6 @@ app.use(express.urlencoded({ extended: true, limit: "100mb" })); // <- Parses UR
 
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use("/client/public/upload", express.static("/client/public/upload"));
 
 connectDB();
 processAllShopifyShops(); // Do this in cron job
