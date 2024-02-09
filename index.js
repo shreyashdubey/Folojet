@@ -4,7 +4,7 @@ const http = require("http");
 const app = require("./app");
 const server = http.createServer(app);
 
-const port = process.env.PORT || 3001;
+const port = 443;
 server.listen(port, () => {
   console.log(`Backend Server listening on ${port}`);
 });
